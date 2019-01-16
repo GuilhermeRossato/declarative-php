@@ -15,6 +15,9 @@ class Element {
 
 	public function add($property, $value = null) {
 		if ($property instanceof HTMLElement && $value == null) {
+			if ($this->isVoidElement($this->tag)) {
+				throw new Exception("Cannot add an element to a void element (".$this->tag.")");
+			}
 			$object = $property;
 			if (is_array($this->content)) {
 				array_push($this->content, $object);
@@ -33,28 +36,54 @@ class Element {
 		$this->content = $content;
 	}
 
+	/**
+	 * Determines if a given tag is a void (self-closing) element.
+	 * @param $tag  The lowercase tag name of the element
+	 */
+	public function isVoidElement($tag) {
+		return (in_array($tag, ["img", "input", "br", "wbr", "hr", "embed"]));
+	}
+
+
+	/**
+	 * Converts an inner style to its minified form, removing unnecessary spaces and newlines.
+	 * @param $css  The script without brackets to be stripped of commentary and whitespaces.
+	 */
+	public function minifyStyle($css) {
+		$css = preg_replace('/\/\*((?!\*\/).)*\*\//', '', $css);
+		$css = preg_replace('/\s{2,}/', ' ', $css);
+		$css = preg_replace('/\s*([:;{}])\s*/', '$1', $css);
+		$css = str_replace(": ", ":", $css);
+		return preg_replace('/;}/', '}', $css);
+	}
+
+	/**
+	 * Composes the beggining of an element (or it fully, if it's a void element)
+	 * @return string  The start of the component
+	 */
 	protected function getHeader() {
 		$content = "<".$this->tag;
 		if (count($this->config)) {
 			foreach ($this->config as $key=>$value) {
 				if ($key === "style") {
-					$value = $this->minifyCSS($value);
+					$value = $this->minifyStyle($value);
 				}
 				$content .= ' '.$key.'="'.htmlspecialchars($value).'"';
 			}
 		}
-		$content .= ($this->tag === "img" || $this->tag === "input")?"/>":">";
+		$content .= ($this->isVoidElement($this->tag))?" />":">";
 		return $content;
 	}
 
 	/**
 	 * Transform the element and its content into raw HTML code
-	 * @return string The compressed HTML code that represents the object and its content
+	 * @return string  The compressed HTML code that represents the object and its content
 	 */
 	public function flatten() {
 		$content = $this->getHeader();
 
-		if ($this->tag === "img" || $this->tag === "input") {
+		// Check if it's a void element quickly
+		if (substr($this->tag, 2) === "/>") {
 			return $content;
 		}
 
@@ -69,8 +98,8 @@ class Element {
 
 	/**
 	 * Transform a minus separated string to camel case
-	 * @param  string $str Ex: "something-something"
-	 * @return string      Ex: "somethingSomething"
+	 * @param  string $str  The string to be converted  Ex: "something-something"
+	 * @return string       The converted string        Ex: "somethingSomething"
 	 */
 	public function minusSeparatedToCamelCase($str) {
 		$ret = "";
@@ -99,7 +128,7 @@ class Element {
 	/**
 	 * Tries to find a sub-element through query selection.
 	 * @param  string $query   The query, like ".list" or "#root"
-	 * @return Element       Returns the element or false if it wasn't found
+	 * @return Element         Returns the element or false if it wasn't found
 	*/
 	public function querySelector($query) {
 		$result = [];

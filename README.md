@@ -60,11 +60,11 @@ echo $list;
 
 Elements can be nested multiple times by other elements or text, they later get 'flatened' into a html content.
 
-### Inheritance
+### Inheritance and Composition
 
 You can compose you own elements as classes to abstract and separate complex behaviour:
 
-```pho
+```php
 use Rossato\Element;
 
 class Form extends Element {

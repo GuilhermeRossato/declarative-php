@@ -2,7 +2,7 @@
 
 namespace Rossato;
 
-use Rossato/Elements;
+use Rossato\Element;
 
 /**
  *	A class used to represent an HTML page
@@ -12,7 +12,7 @@ class Page extends Element {
 	public function __construct($content = []) {
 		$this->head = new Element("head");
 		$this->body = new Element("body", [], $content);
-		super::construct("html", [], [$head, $body]);
+		parent::__construct("html", [], [$this->head, $this->body]);
 	}
 
 	/**

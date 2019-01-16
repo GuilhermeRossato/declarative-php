@@ -16,7 +16,7 @@ class Element {
 	public function add($property, $value = null) {
 		if ($property instanceof HTMLElement && $value == null) {
 			if ($this->isVoidElement($this->tag)) {
-				throw new Exception("Cannot add an element to a void element (".$this->tag.")");
+				throw new \Exception("Cannot add an element to a void element (".$this->tag.")");
 			}
 			$object = $property;
 			if (is_array($this->content)) {
@@ -27,7 +27,7 @@ class Element {
 		} else if (is_string($property)) {
 			$this->config[$property] = $value;
 		} else {
-			throw new Exception("Invalid property to 'add' method of HTML '".$this->tag."' element");
+			throw new \Exception("Invalid property to 'add' method of HTML '".$this->tag."' element");
 		}
 		return $this;
 	}
@@ -54,7 +54,8 @@ class Element {
 		$css = preg_replace('/\s{2,}/', ' ', $css);
 		$css = preg_replace('/\s*([:;{}])\s*/', '$1', $css);
 		$css = str_replace(": ", ":", $css);
-		return preg_replace('/;}/', '}', $css);
+		$css = substr($css, -1)===";"?substr($css, 0, strlen($css)-1):$css;
+		return $css;
 	}
 
 	/**
@@ -83,7 +84,7 @@ class Element {
 		$content = $this->getHeader();
 
 		// Check if it's a void element quickly
-		if (substr($this->tag, 2) === "/>") {
+		if (substr($content, -2) === "/>") {
 			return $content;
 		}
 
@@ -149,7 +150,7 @@ class Element {
 		$query = trim($query);
 
 		if (strpos($query, "[") !== false) {
-			throw new Exception("Selecting by property is currently not supported!");
+			throw new \Exception("Selecting by property is currently not supported!");
 		}
 
 		if ($query[0] == ".") {

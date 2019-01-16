@@ -4,9 +4,11 @@ A micro-framework for building declarative and static web applications in PHP
 
 You can think of this framework as a ReactDOM without JSX, but for PHP developers.
 
+The idea is to create dinamic elements through php classes that "flatten" into HTML in a declarative way.
+
 ## Getting started
 
-Usage is as simple as possible:
+Usage is pretty straightforward:
 
 ```php
 use Rossato\Element;
@@ -68,7 +70,7 @@ You can compose you own elements as classes to abstract and separate complex beh
 use Rossato\Element;
 
 class Form extends Element {
-    constructor($label) {
+    public function __construct($label) {
         $button = new Element(
             "input",
             [
@@ -112,7 +114,6 @@ class App extends Page {
 $app = new App();
 
 echo $app;
-
 ```
 
 This renders your declarative App like the following: (formatted from a minified result for demonstration)
@@ -120,12 +121,12 @@ This renders your declarative App like the following: (formatted from a minified
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Web App Test</title>
-</head>
-<body>
-	<div>Hello world</div>
-</body>
+	<head>
+		<title>Web App Test</title>
+	</head>
+	<body>
+		<div>Hello world</div>
+	</body>
 </html>
 ```
 
@@ -136,7 +137,7 @@ Data has to be passed around in a top-down fashion:
 ```php
 class PostList extends Element {
 
-    constructor($postData) {
+    public function __construct($postData) {
         $postList = [];
         foreach ($postsData as $name=>$post) {
                 $postList[] = new Element(

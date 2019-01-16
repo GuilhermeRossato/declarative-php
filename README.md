@@ -23,7 +23,7 @@ echo $div;
 
 ```
 
-This outputs an html `div` element with the `custom` class and `text` as content.
+This outputs an html `div` element with the `custom` class and `text` as content, like so: `<div class="custom">text</div>`
 
 ### Nested examples
 

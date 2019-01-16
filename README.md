@@ -78,7 +78,7 @@ class Form extends Element {
         );
 
         parent::__construct(
-            "form,
+            "form",
             ["action => "endpoint.php"],
             $button
         );

@@ -2,7 +2,7 @@
 
 A micro-framework for building declarative and static web applications in PHP
 
-You can think of this framework as a ReactDOM withou JSX, but for PHP developers.
+You can think of this framework as a ReactDOM without JSX, but for PHP developers.
 
 ## Getting started
 
@@ -133,11 +133,10 @@ This renders your declarative App like the following: (formatted from a minified
 
 Data has to be passed around in a top-down fashion:
 
-```
-
+```php
 class PostList extends Element {
+
     constructor($postData) {
-    
         $postList = [];
         foreach ($postsData as $name=>$post) {
                 $postList[] = new Element(
@@ -145,7 +144,7 @@ class PostList extends Element {
                     [],
                     new Element("h2", [], $name),
                     new Element("p", [], $post)
-                )
+                );
         }
         
         parent::__construct("div", ["class" => "post-list"], $postList);
@@ -155,7 +154,7 @@ class PostList extends Element {
 $postsData = [
     "My life as a developer" => "It was fun",
     "I'm declaring" => "It is fun",
-    "I will declare" => "Something should be here"
+    "Title" => "My paragraph text"
 ];
 
 echo new PostList($postData);
@@ -206,3 +205,7 @@ Now, this doesn't take in account cache invalidation, you'd have to delete the c
 Even better, you could have a `clear cache` method that automatically loads and creates the cache files, so that no end-user ever has to wait for the page to be processed ever again. (in theory).
 
 However, this is a framework after all, there's always a "declarative-php" way of doing things so if you want to know more, read what the [docs have to say about cache](http://guilherme-rossato.com/declarative-php/caching-results/)
+
+# Licence
+
+I do not provide any type of warranty from this or any code I write.

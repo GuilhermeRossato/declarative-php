@@ -37,9 +37,20 @@ class BasicTest
 		$imgStr = $img->__toString();
 
 		if ($imgStr !== '<img src="#">' && $imgStr !== '<img src="#" />') {
-			throw new Exception("Received unexpected string result from img string:\n\"".$imgStr."\"");
+			throw new Exception("Received unexpected string result from img element:\n\"".$imgStr."\"");
 		}
 	}
+
+	public function testMetaFlattening() {
+		$meta = new Element("meta", ["charset" => "utf-8"]);
+
+		$metaStr = $meta->__toString();
+
+		if ($metaStr !== '<meta charset="utf-8">' && $metaStr !== '<meta charset="utf-8" />') {
+			throw new Exception("Received unexpected string result from meta element:\n\"".$metaStr."\"");
+		}
+	}
+
 	public function testImageAddConstraint()
 	{
 		$img = new Element("img", ["src" => "#"]);
@@ -62,12 +73,35 @@ class BasicTest
 		}
 	}
 
+	public function testAddingContent() {
+		$element = new Element("div");
+		$element->add("Hello");
+		$element->add(new Element("span", [], "World"));
+		$elementStr = (string) $element;
+		if ($elementStr !== '<div>Hello<span>World</span></div>') {
+			throw new Exception("Received unexpected string result from element:\n\"".$elementStr."\"");
+		}
+	}
+
+	public function testAddingAttributes() {
+		$element = new Element("div");
+		$element->setAttribute("style", "margin: 0px;");
+		$element->addAttribute("class", "foo");
+		$elementStr = (string) $element;
+		if ($elementStr !== '<div style="margin:0px" class="foo"></div>') {
+			throw new Exception("Received unexpected string result from element:\n\"".$elementStr."\"");
+		}
+	}
+
 }
 
 multitest("BasicTest", [
-	"testBasicElementFlattening" => "Testing basic element flattening",
-	"testBasicPageFlattening" => "Testing basic page flattening",
-	"testImageFlattening" => "Testing basic image flattening",
-	"testImageAddConstraint" => "Testing constraints on void elements",
-	"testStyleCompressing" => "Testing automatic style compression on elements",
+	"testBasicElementFlattening" => "Test basic element flattening",
+	"testBasicPageFlattening" => "Test basic page flattening",
+	"testImageFlattening" => "Test basic image flattening",
+	"testMetaFlattening" => "Test meta (void) element flattening",
+	"testImageAddConstraint" => "Test constraints when adding content to img element",
+	"testStyleCompressing" => "Test automatic style compression on elements",
+	"testAddingContent" => "Test adding content to an element",
+	"testAddingAttributes" => "Test adding attributes to an element"
 ]);

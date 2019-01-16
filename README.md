@@ -74,14 +74,14 @@ class Form extends Element {
         $button = new Element(
             "input",
             [
-                "type => "submit", 
+                "type" => "submit", 
                 "value" => $label
             ]
         );
 
         parent::__construct(
             "form",
-            ["action => "endpoint.php"],
+            ["action" => "endpoint.php"],
             $button
         );
     }
@@ -159,7 +159,6 @@ $postsData = [
 ];
 
 echo new PostList($postData);
-
 ```
 
 Obviously, you're left alone regarding how and where you get data. But be advised: **You must [strip the tags](http://php.net/manual/pt_BR/function.strip-tags.php) from your data!**
@@ -189,7 +188,6 @@ It has the same drawbacks of react, except there's no virtual DOM, so it's a bit
 Thanksfully we have html caching for static content! The basic idea is:
 
 ```php
-
 $cacheFilename = "cache.html";
 if (file_exists($cacheFilename)) {
     readfile($cacheFilename);
@@ -198,7 +196,6 @@ if (file_exists($cacheFilename)) {
     file_put_contents($cacheFilename, $pageContent);
     echo $pageContent;
 }
-
 ```
 
 Now, this doesn't take in account cache invalidation, you'd have to delete the cache to refresh it, but it works nicely.

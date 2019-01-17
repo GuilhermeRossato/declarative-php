@@ -13,25 +13,67 @@ class Element {
 		$this->content = $content ? $content : null;
 	}
 
-	public function add($property, $value = null) {
-		if ($property instanceof HTMLElement && $value == null) {
-			if ($this->isVoidElement($this->tag)) {
-				throw new \Exception("Cannot add an element to a void element (".$this->tag.")");
-			}
-			$object = $property;
-			if (is_array($this->content)) {
-				array_push($this->content, $object);
+	/**
+	 * Adds sub-elements or strings to the current element (multiple-parameter)
+	 *
+	 * @param mixed @objects   An array or multiple parameters to be added to the element
+	 * @param mixed @any       Objects can be arrays, string or other Element instances
+	 * @return Element   The element itself ($this)
+	 */
+	public function add() {
+		if ($this->isVoidElement($this->tag)) {
+			throw new \Exception("Cannot add an element to a void element (".$this->tag.")");
+		}
+		$parameters = func_get_args();
+		foreach ($parameters as $content) {
+			if (is_array($content)) {
+      			$parameters = array_merge($parameters, array_flatten($content));
+			} else if ($content instanceof Element || is_string($content)) {
+				if (is_array($this->content)) {
+					array_push($this->content, $content);
+				} else {
+					$this->content = ($this->content)?[$this->content, $content]:[$content];
+				}
 			} else {
-				$this->content = ($this->content)?[$this->content, $object]:[$object];
+				throw new \Exception("Invalid object type to add to '".$this->tag."' element");
 			}
-		} else if (is_string($property)) {
-			$this->config[$property] = $value;
-		} else {
-			throw new \Exception("Invalid property to 'add' method of HTML '".$this->tag."' element");
 		}
 		return $this;
 	}
 
+	/**
+	 * Sets a property of the object
+	 *
+	 * @param string $attribute  The attribute to be set
+	 * @param string $value      The value to be set as string
+	 * @return string            The value written to the attribute
+	 * @throws Exception         When the $attribute parameter is not a string
+	 */
+	public function setAttribute($attribute, $value) {
+		if (is_string($attribute)) {
+			$attribute = strtolower($attribute);
+			return ($this->config[$attribute] = $value);
+		} else {
+			throw new Exception("Attribute must be a string");
+		}
+	}
+
+	/**
+	 * Alias for setAttribute
+	 *
+	 * @param string $attribute  The attribute to be set
+	 * @param string $value      The value to be set as string
+	 * @return string            The value written to the attribute
+	 */
+	public function addAttribute($attribute, $value) {
+		return $this->setAttribute($attribute, $value);
+	}
+
+	/**
+	 *  Sets the content of the element inconditionally, replacing previos content
+	 *
+	 * @param mixed @content  The string or Element instance or array of contents to be set
+	 */
 	public function content($content) {
 		$this->content = $content;
 	}
@@ -41,7 +83,7 @@ class Element {
 	 * @param $tag  The lowercase tag name of the element
 	 */
 	public function isVoidElement($tag) {
-		return (in_array($tag, ["img", "input", "br", "wbr", "hr", "embed"]));
+		return (in_array($tag, ["img", "input", "br", "wbr", "hr", "embed", "meta", "link"]));
 	}
 
 

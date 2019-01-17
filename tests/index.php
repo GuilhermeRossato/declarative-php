@@ -65,8 +65,8 @@ class BasicTest
 	public function testStyleCompressing() {
 		$style = "margin: 0px ;\n";
 		$style .= "padding : 0px ;\n";
-		$element = new Element("div");
-		$element->add("style", $style);
+		$element = new Element("div", ["style" => $style]);
+		//$element->setAttribute("style", $style);
 		$elementStr = (string) $element;
 		if ($elementStr !== '<div style="margin:0px;padding:0px"></div>') {
 			throw new Exception("Received unexpected string result from styled element:\n\"".$elementStr."\"");
@@ -85,7 +85,7 @@ class BasicTest
 
 	public function testAddingAttributes() {
 		$element = new Element("div");
-		$element->setAttribute("style", "margin: 0px;");
+		$element->setAttribute("style", "margin : 0px ; ");
 		$element->addAttribute("class", "foo");
 		$elementStr = (string) $element;
 		if ($elementStr !== '<div style="margin:0px" class="foo"></div>') {

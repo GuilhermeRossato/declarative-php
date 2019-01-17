@@ -16,15 +16,19 @@ function multitest($testClass, $tests) {
 	usleep(200000);
 	echo "\n";
 	usleep(200000);
+	$showError = true;
 	foreach ($tests as $method => $description) {
-		test($testObject, $method, $description);
+		$success = test($testObject, $method, $description, $showError);
 		usleep(200000);
 		echo "\n";
 		usleep(200000);
+		if ($success === false) {
+			$showError = false;
+		}
 	}
 }
 
-function test($testClass, $testMethod, $testName) {
+function test($testClass, $testMethod, $testName, $showFullError = true) {
 	echo "\t".trim($testName)."... ";
 
 	if (is_string($testClass)) {
@@ -50,9 +54,19 @@ function test($testClass, $testMethod, $testName) {
 		echo "Success\n";
 		return true;
 	} catch (Exception $err) {
-		echo "Failed\n -> ";
+		echo "Failed\n";
+		echo " -> ";
 		$errorString = str_replace(__DIR__, "/tests", trim((string) $err));
-		echo $errorString;
+		if (strpos($errorString, "exception 'Exception' with message") === 0) {
+			$errorString = substr($errorString, strlen("exception 'Exception' with message")+1);
+		}
+		if ($showFullError) {
+			echo $errorString;
+		} else if (strlen($errorString) < 70) {
+			echo $errorString;
+		} else {
+			echo substr($errorString, 0, 70)."... [ommited]";
+		}
 		echo "\n";
 	}
 	return false;

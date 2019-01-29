@@ -7,10 +7,31 @@ namespace Rossato;
  */
 
 class Element {
-	public function __construct($tag, $config = null, $content = null) {
-		$this->tag = strtolower($tag);
+
+	/**
+	 * Creates a representation of an HTML element
+	 * @param string $tag  		The tag as string of the HTML element, ex: "div"
+	 * @param array $config 	The associative array describing the element, ex: ["class" => "button"]
+	 * @param mixed $mixed 		The content inside the element (string|Element instance|array)
+	 * @param mixed $...    	Other parameters are also added as content
+	 */
+	public function __construct($tag, $config = null, $mixed = null) {
+		// Class guards
+		if (!is_string($tag) || strlen($tag) === 0) {
+			throw new Exception("First parameter (tag) must be a non-empty string");
+		}
+		if (!ctype_alnum($tag)) {
+			throw new Exception("First parameter (tag) must contain only alfanumeric ([a-z0-9]");
+		}
+		if ($config && !is_array($config)) {
+			throw new Exception("Invalid config parameter: second parameter must be an associative array or falsy");
+		}
+		$this->tag = strtolower(trim($tag));
 		$this->config = $config ? $config : [];
-		$this->content = $content ? $content : null;
+		if ($mixed) {
+			$args = func_get_args();
+			$this->add(array_slice($args, 2));
+		}
 	}
 
 	/**
@@ -18,7 +39,7 @@ class Element {
 	 *
 	 * @param mixed @objects   An array or multiple parameters to be added to the element
 	 * @param mixed @any       Objects can be arrays, string or other Element instances
-	 * @return Element   The element itself ($this)
+	 * @return Element         The element itself ($this)
 	 */
 	public function add() {
 		if ($this->isVoidElement($this->tag)) {
@@ -27,7 +48,8 @@ class Element {
 		$parameters = func_get_args();
 		foreach ($parameters as $content) {
 			if (is_array($content)) {
-      			$parameters = array_merge($parameters, array_flatten($content));
+				// Call itself with the array flatened
+				call_user_func_array([$this, "add"], $content);
 			} else if ($content instanceof Element || is_string($content)) {
 				if (is_array($this->content)) {
 					array_push($this->content, $content);
@@ -35,7 +57,7 @@ class Element {
 					$this->content = ($this->content)?[$this->content, $content]:[$content];
 				}
 			} else {
-				throw new \Exception("Invalid object type to add to '".$this->tag."' element");
+				throw new \Exception("Invalid object of type '".gettype($content)."' to add to '".$this->tag."' element: ");
 			}
 		}
 		return $this;
@@ -49,10 +71,10 @@ class Element {
 	 * @return string            The value written to the attribute
 	 * @throws Exception         When the $attribute parameter is not a string
 	 */
-	public function setAttribute($attribute, $value) {
+	public function setAttribute($attribute, $value=null) {
 		if (is_string($attribute)) {
 			$attribute = strtolower($attribute);
-			return ($this->config[$attribute] = $value);
+			return ($this->config[$attribute] = ($value === null) ? true : $value);
 		} else {
 			throw new Exception("Attribute must be a string");
 		}
@@ -65,12 +87,13 @@ class Element {
 	 * @param string $value      The value to be set as string
 	 * @return string            The value written to the attribute
 	 */
-	public function addAttribute($attribute, $value) {
+	public function addAttribute($attribute, $value=null) {
 		return $this->setAttribute($attribute, $value);
 	}
 
 	/**
-	 *  Sets the content of the element inconditionally, replacing previos content
+	 *  Sets the content of the element inconditionally, replacing previous content
+	 *  Warning: This is not to be used lightly as this could easily break the class
 	 *
 	 * @param mixed @content  The string or Element instance or array of contents to be set
 	 */
@@ -83,7 +106,7 @@ class Element {
 	 * @param $tag  The lowercase tag name of the element
 	 */
 	public function isVoidElement($tag) {
-		return (in_array($tag, ["img", "input", "br", "wbr", "hr", "embed", "meta", "link"]));
+		return (in_array($tag, ["img", "input", "br", "wbr", "hr", "embed", "meta", "link", "col", "area", "base", "rect"]));
 	}
 
 
@@ -110,6 +133,10 @@ class Element {
 			foreach ($this->config as $key=>$value) {
 				if ($key === "style") {
 					$value = $this->minifyStyle($value);
+				}
+				if ($value === true) {
+					$content .= ' '.$key;
+					continue;
 				}
 				$content .= ' '.$key.'="'.htmlspecialchars($value).'"';
 			}

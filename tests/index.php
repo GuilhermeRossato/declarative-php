@@ -62,7 +62,7 @@ class BasicTest
 		}
 	}
 
-	public function testStyleCompressing() {
+	public function testStyleCompression() {
 		$style = "margin: 0px ;\n";
 		$style .= "padding : 0px ;\n";
 		$element = new Element("div", ["style" => $style]);
@@ -93,6 +93,42 @@ class BasicTest
 		}
 	}
 
+	public function testMultipleSubElements() {
+		$element = new Element(
+			"div",
+			null,
+			[
+				"a",
+				["b", "c"]
+			],
+			"d"
+		);
+		$elementStr = (string) $element;
+		$expects = "<div>abcd</div>";
+		if ($elementStr !== $expects) {
+			throw new Exception("Received unexpected string result from element:\n\"".$elementStr."\"");
+		}
+	}
+
+	public function testParameterWithoutValue() {
+		$element1 = new Element("button", ["disabled" => true], "content");
+		$element2 = new Element("button", null, "content");
+		$element2->setAttribute("disabled");
+		$element1Str = (string) $element1;
+		$element2Str = (string) $element2;
+		$expects = "<button disabled>content</button>";
+		if ($element1Str !== $expects || $element2Str !== $expects) {
+			throw new Exception("Received unexpected string result from element:\n\"".$elementStr."\"");
+		}
+	}
+
+	public function testParameterWithoutValueVariant() {
+		$elementStr = (string) $element;
+		$expects = "<button disabled>content</button>";
+		if ($elementStr !== $expects) {
+			throw new Exception("Received unexpected string result from element:\n\"".$elementStr."\"");
+		}
+	}
 }
 
 multitest("BasicTest", [
@@ -101,7 +137,9 @@ multitest("BasicTest", [
 	"testImageFlattening" => "Test basic image flattening",
 	"testMetaFlattening" => "Test meta (void) element flattening",
 	"testImageAddConstraint" => "Test constraints when adding content to img element",
-	"testStyleCompressing" => "Test automatic style compression on elements",
+	"testStyleCompression" => "Test automatic style compression on elements",
 	"testAddingContent" => "Test adding content to an element",
-	"testAddingAttributes" => "Test adding attributes to an element"
+	"testAddingAttributes" => "Test adding attributes to an element",
+	"testMultipleSubElements" => "Test adding multiple sub elements and variable parameter width",
+	"testParameterWithoutValue" => "Test adding a parameter without value to an object"
 ]);

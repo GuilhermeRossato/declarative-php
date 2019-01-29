@@ -27,7 +27,7 @@ This outputs an html `div` element with the `custom` class and `text` as content
 
 ### Nested examples
 
-Elements can be combines to create more complex structures:
+Elements can be combined to create more complex structures:
 
 ```php
 use Rossato\Element;
@@ -35,10 +35,8 @@ use Rossato\Element;
 echo new Element(
     "ul",
     ["style" => "margin: 10px"],
-    [
-        new Element("li", null, "First element"),
-        new Element("li", null, "Second element")
-    ]
+    new Element("li", null, "First element"),
+    new Element("li", null, "Second element")
 );
 ```
 
@@ -142,13 +140,13 @@ However, transforming data into HTML is a pain, take a look:
 ?>
 <div class="price-box">
     <span class="label">Price:</span>
-    <span class="value"><?php echo $price; ?></span>
-</dip>
+    <span class="value"><?php echo $price; ?></spen>
+</div>
 ```
 
 Spot the bug? That one was easy, even your text editor could've picked that one up.
 
-Obviously, you must think, all I have to do is abstract it further:
+To help you mitigate this kind of problem, however, you can abstract it further:
 
 ```php
 

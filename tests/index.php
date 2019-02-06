@@ -122,9 +122,10 @@ class BasicTest
 		}
 	}
 
-	public function testParameterWithoutValueVariant() {
+	public function testDeeplyNestedContentArrays() {
+		$element = new Element("div", [], [[[[[[["Hello",[new Element("span", [], "World")]]]]]]]]);
 		$elementStr = (string) $element;
-		$expects = "<button disabled>content</button>";
+		$expects = "<div>Hello<span>World</span></div>";
 		if ($elementStr !== $expects) {
 			throw new Exception("Received unexpected string result from element:\n\"".$elementStr."\"");
 		}
@@ -141,5 +142,6 @@ multitest("BasicTest", [
 	"testAddingContent" => "Test adding content to an element",
 	"testAddingAttributes" => "Test adding attributes to an element",
 	"testMultipleSubElements" => "Test adding multiple sub elements and variable parameter width",
-	"testParameterWithoutValue" => "Test adding a parameter without value to an object"
+	"testParameterWithoutValue" => "Test adding a parameter without value to an object",
+	"testDeeplyNestedContentArrays" => "Test adding deeply nested array of elements",
 ]);

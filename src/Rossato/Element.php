@@ -50,8 +50,10 @@ class Element {
 			if (is_array($content)) {
 				// Call itself with the array flatened
 				call_user_func_array([$this, "add"], $content);
-			} else if ($content instanceof Element || is_string($content)) {
-				if (is_array($this->content)) {
+			} else if (($content instanceof Element) || is_string($content)) {
+				if (!property_exists($this, 'content')) {
+					$this->content = $content;
+				} else if (is_array($this->content)) {
 					array_push($this->content, $content);
 				} else {
 					$this->content = ($this->content)?[$this->content, $content]:[$content];

@@ -9,17 +9,8 @@ class BasicFunctionalityTest extends TestCase {
 		$div = new Element("div");
 
 		$this->assertTrue(
-			method_exists($div, "__toString"), "Missing a string representation method of the element");
-
-		$this->assertTrue(
 			method_exists($div, "render"),
 			"Missing a render representation method of the element"
-		);
-
-		$this->assertSame(
-			$div->__toString(),
-			"<div></div>",
-			"Got unexpected string result from div string"
 		);
 
 		$this->assertSame(

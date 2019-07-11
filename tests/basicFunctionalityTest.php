@@ -4,10 +4,8 @@ use PHPUnit\Framework\TestCase;
 use \Rossato\Element;
 use \Rossato\Page;
 
-class BasicFunctionalityTest extends TestCase
-{
-	public function testBasicElementFlattening()
-	{
+class BasicFunctionalityTest extends TestCase {
+	public function testBasicElementFlattening() {
 		$div = new Element("div");
 
 		$this->assertTrue(
@@ -30,8 +28,7 @@ class BasicFunctionalityTest extends TestCase
 		);
 	}
 
-	public function testBasicPageFlattening()
-	{
+	public function testBasicPageFlattening() {
 		$page = new Page();
 
 		$this->assertTrue(

@@ -11,20 +11,21 @@ class BasicFunctionalityTest extends TestCase {
 		$this->assertTrue(
 			method_exists($div, "__toString"), "Missing a string representation method of the element");
 
-		$this->assertTrue(method_exists($div, "render"), "Missing a render representation method of the element");
-
-		$stringResult = $div->__toString();
-		$this->assertSame(
-			$stringResult,
-			"<div></div>",
-			"Received unexpected string result from div string:\n\"".$stringResult."\""
+		$this->assertTrue(
+			method_exists($div, "render"),
+			"Missing a render representation method of the element"
 		);
 
-		$renderResult = $div->render();
 		$this->assertSame(
-			$renderResult,
+			$div->__toString(),
 			"<div></div>",
-			"Received unexpected render result from div string:\n\"".$renderResult."\""
+			"Got unexpected string result from div string"
+		);
+
+		$this->assertSame(
+			$div->render(),
+			"<div></div>",
+			"Got unexpected render result from div string"
 		);
 	}
 
@@ -41,20 +42,18 @@ class BasicFunctionalityTest extends TestCase {
 			"Missing a render representation method of the element"
 		);
 
-		$stringResult = $page->__toString();
 		$expectedPageString = "<!doctype html><html><head></head><body></body></html>";
 
 		$this->assertSame(
-			$stringResult,
+			$page->__toString(),
 			$expectedPageString,
-			"Received unexpected string result from page string:\n\"".$stringResult."\""
+			"Got unexpected string result from page string"
 		);
 
-		$renderResult = $page->render();
 		$this->assertSame(
-			$renderResult,
+			$page->render(),
 			$expectedPageString,
-			"Received unexpected string result from page string:\n\"".$renderResult."\""
+			"Got unexpected string result from page string"
 		);
 	}
 }

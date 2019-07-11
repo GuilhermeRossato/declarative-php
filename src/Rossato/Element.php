@@ -114,6 +114,7 @@ class Element {
 
 	/**
 	 * Converts an inner style to its minified form, removing unnecessary spaces and newlines.
+	 *
 	 * @param $css  The script without brackets to be stripped of commentary and whitespaces.
 	 */
 	public function minifyStyle($css) {
@@ -121,12 +122,13 @@ class Element {
 		$css = preg_replace('/\s{2,}/', ' ', $css);
 		$css = preg_replace('/\s*([:;{}])\s*/', '$1', $css);
 		$css = str_replace(": ", ":", $css);
-		$css = substr($css, -1)===";"?substr($css, 0, strlen($css)-1):$css;
+		$css = substr($css, -1) === ";" ? substr($css, 0, strlen($css)-1) : $css;
 		return $css;
 	}
 
 	/**
 	 * Composes the beggining of an element (or it fully, if it's a void element)
+	 *
 	 * @return string  The start of the component
 	 */
 	protected function getHeader() {
@@ -149,12 +151,13 @@ class Element {
 
 	/**
 	 * Transform the element and its content into raw HTML code
+	 *
 	 * @return string  The compressed HTML code that represents the object and its content
 	 */
 	public function flatten() {
 		$content = $this->getHeader();
 
-		// Check if it's a void element quickly
+		// Check if it's a void element to exit early
 		if (substr($content, -2) === "/>") {
 			return $content;
 		}
@@ -170,10 +173,11 @@ class Element {
 
 	/**
 	 * Transform a minus separated string to camel case
+	 *
 	 * @param  string $str  The string to be converted  Ex: "something-something"
 	 * @return string       The converted string        Ex: "somethingSomething"
 	 */
-	public function minusSeparatedToCamelCase($str) {
+	public function kebabCaseToCamelCase($str) {
 		$ret = "";
 		$nextIsCapital = false;
 		for ($i=0; $i<strlen($str); $i+=1) {
@@ -193,7 +197,21 @@ class Element {
 		return $ret;
 	}
 
+	/**
+	 * Transform the element and its content into raw html code (alias for the flatten method).
+	 *
+	 * @return string 	The compressed HTML code that represents the object and its content
+	 */
 	public function __toString() {
+		return $this->flatten();
+	}
+
+	/**
+	 * Transform the element and its content into raw html code, (alias for the flatten method).
+	 *
+	 * @return string 	The compressed HTML code that represents the object and its content
+	 */
+	public function render() {
 		return $this->flatten();
 	}
 

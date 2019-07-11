@@ -1,14 +1,14 @@
 # Declarative PHP
 
-A micro-framework for building declarative and static web applications in PHP
+A micro-framework for building declarative and static web applications in PHP.
 
-You can think of this framework as a ReactDOM without JSX, but for PHP developers.
+You can think of this framework as a ReactDOM without JSX for PHP developers.
 
-This framework works by creating dinamic elements through php classes that "flatten" into HTML.
+This framework works by creating dynamic elements declaratively through php classes that render into HTML.
 
 ## Getting started
 
-Usage is pretty straightforward:
+The element class constructor receives the tag name, the properties array and the contents as arguments:
 
 ```php
 use Rossato\Element;
@@ -111,7 +111,7 @@ class App extends Page {
 
 $app = new App();
 
-echo $app;
+echo $app->render();
 ```
 
 This renders your declarative App like the following: (formatted from a minified result for demonstration)

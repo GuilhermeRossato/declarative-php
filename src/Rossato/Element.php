@@ -18,13 +18,13 @@ class Element {
 	public function __construct($tag, $config = null, $mixed = null) {
 		// Class guards
 		if (!is_string($tag) || strlen($tag) === 0) {
-			throw new Exception("First parameter (tag) must be a non-empty string");
+			throw new \InvalidArgumentException("First parameter (tag) must be a non-empty string");
 		}
 		if (!ctype_alnum($tag)) {
-			throw new Exception("First parameter (tag) must contain only alfanumeric ([a-z0-9]");
+			throw new \InvalidArgumentException("First parameter (tag) must contain only alfanumeric ([a-z0-9]");
 		}
 		if ($config && !is_array($config)) {
-			throw new Exception("Invalid config parameter: second parameter must be an associative array or falsy");
+			throw new \InvalidArgumentException("Invalid config parameter: second parameter must be an associative array or falsy");
 		}
 		$this->tag = strtolower(trim($tag));
 		$this->config = $config ? $config : [];
@@ -43,7 +43,7 @@ class Element {
 	 */
 	public function add() {
 		if ($this->isVoidElement($this->tag)) {
-			throw new \Exception("Cannot add an element to a void element (".$this->tag.")");
+			throw new \InvalidArgumentException("Cannot add an element to a void element (".$this->tag.")");
 		}
 		$parameters = func_get_args();
 		foreach ($parameters as $content) {
@@ -59,7 +59,7 @@ class Element {
 					$this->content = ($this->content)?[$this->content, $content]:[$content];
 				}
 			} else {
-				throw new \Exception("Invalid object of type '".gettype($content)."' to add to '".$this->tag."' element: ");
+				throw new \InvalidArgumentException("Invalid object of type '".gettype($content)."' to add to '".$this->tag."' element: ");
 			}
 		}
 		return $this;
@@ -68,17 +68,17 @@ class Element {
 	/**
 	 * Sets a property of the object
 	 *
-	 * @param string $attribute  The attribute to be set
-	 * @param string $value      The value to be set as string
-	 * @return string            The value written to the attribute
-	 * @throws Exception         When the $attribute parameter is not a string
+	 * @param string $attribute          The attribute to be set
+	 * @param string $value              The value to be set as string
+	 * @return string                    The value written to the attribute
+	 * @throws InvalidArgumentException  When the $attribute parameter is not a string
 	 */
 	public function setAttribute($attribute, $value=null) {
 		if (is_string($attribute)) {
 			$attribute = strtolower($attribute);
 			return ($this->config[$attribute] = ($value === null) ? true : $value);
 		} else {
-			throw new Exception("Attribute must be a string");
+			throw new \InvalidArgumentException("Attribute must be a string");
 		}
 	}
 
@@ -123,7 +123,7 @@ class Element {
 		$css = preg_replace('/\s*([:;{}])\s*/', '$1', $css);
 		$css = str_replace(": ", ":", $css);
 		$css = substr($css, -1) === ";" ? substr($css, 0, strlen($css)-1) : $css;
-		return $css;
+		return trim($css);
 	}
 
 	/**
@@ -239,7 +239,7 @@ class Element {
 		$query = trim($query);
 
 		if (strpos($query, "[") !== false) {
-			throw new \Exception("Selecting by property is currently not supported!");
+			throw new \InvalidArgumentException("Selecting by property is currently not supported!");
 		}
 
 		if ($query[0] == ".") {

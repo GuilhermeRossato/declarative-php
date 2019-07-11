@@ -10,8 +10,8 @@
         }
     ],
     "scripts": {
-        "test": "phpunit tests",
-        "test-coverage": "phpunit --coverage-text tests"
+        "test": "phpunit --bootstrap ./vendor/autoload.php tests",
+        "test-coverage": "phpunit --bootstrap ./vendor/autoload.php --coverage-text tests"
     },
     "require": {
         "php": ">=5.3.0"

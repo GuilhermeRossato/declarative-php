@@ -5,6 +5,7 @@ use \Rossato\Element;
 use \Rossato\Page;
 
 class BasicFunctionalityTest extends TestCase {
+
 	public function testBasicElementFlattening() {
 		$div = new Element("div");
 

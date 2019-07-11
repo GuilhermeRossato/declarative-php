@@ -1,6 +1,5 @@
 <?php
 
-
 use PHPUnit\Framework\TestCase;
 use \Rossato\Element;
 use \Rossato\Page;
@@ -21,10 +20,8 @@ class CompositionFunctionalityTest extends TestCase {
 		$element->add("Hello");
 		$element->add(new Element("span", [], "World"));
 
-		$elementStr = (string) $element;
-
 		$this->assertSame(
-			$elementStr,
+			(string) $element,
 			'<div>Hello<span>World</span></div>',
 			"Got unexpected string result from element"
 		);
@@ -35,10 +32,8 @@ class CompositionFunctionalityTest extends TestCase {
 		$element->setAttribute("style", "margin : 0px ; ");
 		$element->addAttribute("class", "foo");
 
-		$elementStr = (string) $element;
-
 		$this->assertSame(
-			$elementStr,
+			(string) $element,
 			'<div style="margin:0px" class="foo"></div>',
 			"Got unexpected string result from element"
 		);
@@ -54,11 +49,33 @@ class CompositionFunctionalityTest extends TestCase {
 			],
 			"d"
 		);
-		$elementStr = (string) $element;
 
 		$this->assertSame(
-			$elementStr,
+			(string) $element,
 			"<div>abcd</div>",
+			"Got unexpected string result from element"
+		);
+	}
+
+	public function testMultipleSideElements() {
+		$element = new Element(
+			"div",
+			[],
+			new Element(
+				"p",
+				null,
+				"hi"
+			),
+			new Element(
+				"span",
+				false,
+				"there"
+			)
+		);
+
+		$this->assertSame(
+			(string) $element,
+			"<div><p>hi</p><span>there</span></div>",
 			"Got unexpected string result from element"
 		);
 	}

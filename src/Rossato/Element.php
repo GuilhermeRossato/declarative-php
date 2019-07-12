@@ -180,7 +180,7 @@ class Element {
 		}
 
 		foreach ((is_array($this->content) ? $this->content : [$this->content]) as $part) {
-			$content .= ($part instanceof HTMLElement)?$part->flatten():$part;
+			$content .= ($part instanceof Element)?$part->flatten():$part;
 		}
 
 		$content .= "</".$this->tag.">";
@@ -207,23 +207,23 @@ class Element {
 	}
 
 	/**
-	 * Tries to find a sub-element through query selection.
+	 * Tries to find all sub-element that matches a query selection.
 	 * @param  string $query   The query, like ".list" or "#root"
-	 * @return Element         Returns the element or false if it wasn't found
+	 * @return array           Returns the array of Element classes that matched or an empty array if nothing was found
 	*/
-	public function querySelector($query) {
-		$result = [];
+	public function querySelectorAll($query) {
+		$results = [];
 
 		// Handle multi-queries
 		if (strpos($query, ",") !== false) {
 			foreach (explode(",", $query) as $subQuery) {
-				foreach ($this->querySelector($subQuery) as $subResults) {
+				foreach ($this->querySelectorAll($subQuery) as $subResults) {
 					foreach ($subResults as $singleSubResult) {
-						array_push($result, $singleSubResult);
+						array_push($results, $singleSubResult);
 					}
 				}
 			}
-			return $result;
+			return $results;
 		}
 
 		// clean extra spaces
@@ -233,32 +233,50 @@ class Element {
 			throw new \InvalidArgumentException("Selecting by property is currently not supported!");
 		}
 
-		if ($query[0] == ".") {
+		if ($query[0] === ".") {
 			$prefixSearch = "class";
-		} else if ($query[0] == "#") {
+		} else if ($query[0] === "#") {
 			$prefixSearch = "id";
+		} else if ($query === "*") {
+			$prefixSearch = "all";
 		} else {
 			$prefixSearch = "tag";
 		}
 
 		foreach ((is_array($this->content) ? $this->content : [$this->content]) as $part) {
-			if ($part instanceof HTMLElement) {
-				if ($prefixSearch == "class" && array_key_exists("class", $part->config)) {
-					if ($part->config["class"] == substr($query, 1)) {
-						array_push($result, $part);
+			if ($part instanceof Element) {
+				if ($prefixSearch === "all") {
+					array_push($results, $part);
+				} if ($prefixSearch == "class" && array_key_exists("class", $part->config)) {
+					if ($part->config["class"] === substr($query, 1)) {
+						array_push($results, $part);
 					}
-				} else if ($prefixSearch == "id" && array_key_exists("id", $part->config)) {
-					if ($part->config["id"] == substr($query, 1)) {
-						array_push($result, $part);
+				} else if ($prefixSearch === "id" && array_key_exists("id", $part->config)) {
+					if ($part->config["id"] === substr($query, 1)) {
+						array_push($results, $part);
 					}
-				} else if ($prefixSearch == "tag" && property_exists($part, "tag")) {
-					if ($part->tag == $query) {
-						array_push($result, $part);
+				} else if ($prefixSearch === "tag" && property_exists($part, "tag")) {
+					if ($part->tag === $query) {
+						array_push($results, $part);
 					}
 				}
 			}
 		}
 
-		return $result;
+		return $results;
 	}
+
+	/**
+	 * Tries to find the first sub-element that matches a query selection.
+	 * @param  string $query   The query, like ".list" or "#root"
+	 * @return Element         Returns the element or null if nothing was found
+	*/
+	public function querySelector($query) {
+		$list = $this->querySelectorAll($query);
+		if ($list && count($list) > 0) {
+			return $list[0];
+		}
+		return null;
+	}
+
 }

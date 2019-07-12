@@ -30,15 +30,15 @@ class SelfClosingTagRenderingTest extends TestCase {
 	}
 
 	/**
-     * @expectedException InvalidArgumentException
-     */
+	 * @expectedException InvalidArgumentException
+	 */
 	public function testImageContentConstraint() {
 		$img = new Element("img", ["src" => "#"], 'content');
 	}
 
 	/**
-     * @expectedException InvalidArgumentException
-     */
+	 * @expectedException InvalidArgumentException
+	 */
 	public function testImageAddConstraint() {
 		$img = new Element("img", ["src" => "#"]);
 		$img->add(new Element("div"));

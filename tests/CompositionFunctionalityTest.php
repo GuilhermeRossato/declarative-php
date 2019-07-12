@@ -68,7 +68,7 @@ class CompositionFunctionalityTest extends TestCase {
 			),
 			new Element(
 				"span",
-				false,
+				null,
 				"there"
 			)
 		);

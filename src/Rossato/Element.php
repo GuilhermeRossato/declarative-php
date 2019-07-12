@@ -20,8 +20,11 @@ class Element {
 		if (!is_string($tag) || strlen($tag) === 0) {
 			throw new \InvalidArgumentException("First parameter (tag) must be a non-empty string");
 		}
-		if (!ctype_alnum($tag)) {
-			throw new \InvalidArgumentException("First parameter (tag) must contain only alfanumeric ([a-z0-9]");
+		if (strpos(trim($tag), " ") !== false) {
+			throw new \InvalidArgumentException("First parameter (tag) cannot contain spaces");
+		}
+		if (!preg_match("/^[a-z\-0-9]+$/i", trim($tag))) {
+			throw new \InvalidArgumentException("First parameter (tag) can only contain alfanumeric characters [A-Za-z0-9] and dashes (-)");
 		}
 		if ($config !== null && !is_array($config)) {
 			throw new \InvalidArgumentException("Invalid config parameter: Second parameter must be an associative array or null");

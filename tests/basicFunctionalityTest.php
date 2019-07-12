@@ -48,4 +48,5 @@ class BasicFunctionalityTest extends TestCase {
 			"Got unexpected string result from page string"
 		);
 	}
+
 }

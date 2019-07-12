@@ -79,4 +79,5 @@ class CompositionFunctionalityTest extends TestCase {
 			"Got unexpected string result from element"
 		);
 	}
+
 }

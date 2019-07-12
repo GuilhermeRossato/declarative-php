@@ -43,4 +43,5 @@ class SelfClosingTagRenderingTest extends TestCase {
 		$img = new Element("img", ["src" => "#"]);
 		$img->add(new Element("div"));
 	}
+
 }

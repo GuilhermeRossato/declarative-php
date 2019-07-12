@@ -23,11 +23,16 @@ class Element {
 		if (!ctype_alnum($tag)) {
 			throw new \InvalidArgumentException("First parameter (tag) must contain only alfanumeric ([a-z0-9]");
 		}
-		if ($config && !is_array($config)) {
-			throw new \InvalidArgumentException("Invalid config parameter: second parameter must be an associative array or falsy");
+		if ($config !== null && !is_array($config)) {
+			throw new \InvalidArgumentException("Invalid config parameter: Second parameter must be an associative array or null");
 		}
 		$this->tag = strtolower(trim($tag));
-		$this->config = $config ? $config : [];
+		if ($config !== null) {
+			$this->config = [];
+			foreach ($config as $key=>$value) {
+				$this->setAttribute($key, $value);
+			}
+		}
 		if ($mixed !== null) {
 			$args = func_get_args();
 			$this->add(array_slice($args, 2));
@@ -80,16 +85,16 @@ class Element {
 	 * Sets a property of the object
 	 *
 	 * @param string $attribute          The attribute to be set
-	 * @param string $value              The value to be set as string
-	 * @return string                    The value written to the attribute
+	 * @param mixed $value               The value to be set as string
+	 * @return mixed                     The value written to the attribute
 	 * @throws InvalidArgumentException  When the $attribute parameter is not a string
 	 */
-	public function setAttribute($attribute, $value=null) {
+	public function setAttribute($attribute, $value = null) {
 		if (is_string($attribute)) {
-			$attribute = strtolower($attribute);
-			return ($this->config[$attribute] = ($value === null) ? true : $value);
+			$attribute = strtolower(trim($attribute));
+			return ($this->config[$attribute] = $value);
 		} else {
-			throw new \InvalidArgumentException("Attribute must be a string");
+			throw new \InvalidArgumentException("Config attribute must be a string");
 		}
 	}
 
@@ -100,7 +105,7 @@ class Element {
 	 * @param string $value      The value to be set as string
 	 * @return string            The value written to the attribute
 	 */
-	public function addAttribute($attribute, $value=null) {
+	public function addAttribute($attribute, $value = null) {
 		return $this->setAttribute($attribute, $value);
 	}
 
@@ -146,12 +151,13 @@ class Element {
 		$content = "<".$this->tag;
 		if (count($this->config)) {
 			foreach ($this->config as $key=>$value) {
-				if ($key === "style") {
-					$value = $this->minifyStyle($value);
-				}
-				if ($value === true) {
+				if ($value === false) {
+					continue;
+				} else if ($value === true) {
 					$content .= ' '.$key;
 					continue;
+				} else if ($key === "style") {
+					$value = $this->minifyStyle($value);
 				}
 				$content .= ' '.$key.'="'.htmlspecialchars($value).'"';
 			}
@@ -180,32 +186,6 @@ class Element {
 		$content .= "</".$this->tag.">";
 
 		return $content;
-	}
-
-	/**
-	 * Transform a minus separated string to camel case
-	 *
-	 * @param  string $str  The string to be converted  Ex: "something-something"
-	 * @return string       The converted string        Ex: "somethingSomething"
-	 */
-	public function kebabCaseToCamelCase($str) {
-		$ret = "";
-		$nextIsCapital = false;
-		for ($i=0; $i<strlen($str); $i+=1) {
-			$letter = $str[$i];
-			if ($letter == '-') {
-				$nextIsCapital = true;
-			} else if ($nextIsCapital && $letter > 'a' && $letter < 'z') {
-				$ret .= strtoupper($letter);
-				$nextIsCapital = false;
-			} else if ($letter !== ' ' && $letter !== "\t" && $letter !== "\n") {
-				$ret .= $letter;
-			}
-		}
-		if (trim($ret) != $ret) {
-			Log::info("Something went wrong with '".$str."'");
-		}
-		return $ret;
 	}
 
 	/**

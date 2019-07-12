@@ -1,6 +1,5 @@
-# Declarative PHP
-
-A micro-framework for building declarative and static web applications in PHP.
+<p align="center"><img src="https://github.com/GuilhermeRossato/declarative-php/blob/master/logo.png?raw=true" alt="Declarative PHP"/></p>
+<p align="center">:hammer: Simple micro-framework for building declarative web applications in PHP :newspaper:</p>
 
 You can think of this framework as a ReactDOM without JSX for PHP developers.
 

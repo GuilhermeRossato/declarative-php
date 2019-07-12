@@ -61,6 +61,13 @@ class FalsyValuesTest extends TestCase {
 	/**
 	 * @expectedException InvalidArgumentException
 	 */
+	public function testInvalidTagType() {
+		$element = new Element("invalid tag", false, 0);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
 	public function testInvalidTruthyConfig() {
 		$element = new Element("p", true, 0);
 	}

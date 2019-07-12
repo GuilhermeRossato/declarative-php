@@ -24,15 +24,19 @@ class Element {
 			throw new \InvalidArgumentException("First parameter (tag) cannot contain spaces");
 		}
 		if (!preg_match("/^[a-z\-0-9]+$/i", trim($tag))) {
-			throw new \InvalidArgumentException("First parameter (tag) can only contain alfanumeric characters [A-Za-z0-9] and dashes (-)");
+			throw new \InvalidArgumentException(
+				"First parameter (tag) can only contain alfanumeric characters [A-Za-z0-9] and dashes (-)"
+			);
 		}
 		if ($config !== null && !is_array($config)) {
-			throw new \InvalidArgumentException("Invalid config parameter: Second parameter must be an associative array or null");
+			throw new \InvalidArgumentException(
+				"Invalid config parameter: Second parameter must be an associative array or null"
+			);
 		}
 		$this->tag = strtolower(trim($tag));
 		$this->config = [];
 		if ($config !== null) {
-			foreach ($config as $key=>$value) {
+			foreach ($config as $key => $value) {
 				$this->setAttribute($key, $value);
 			}
 		}
@@ -52,7 +56,7 @@ class Element {
 
 		if (!property_exists($this, 'content')) {
 			$this->content = $content;
-		} else if (is_array($this->content)) {
+		} elseif (is_array($this->content)) {
 			array_push($this->content, $content);
 		} else {
 			$this->content = ($this->content !== null) ? [$this->content, $content] : [$content];
@@ -76,10 +80,16 @@ class Element {
 			if (is_array($content)) {
 				// Call itself with the array flatened
 				call_user_func_array([$this, "add"], $content);
-			} else if (($content instanceof Element) || is_string($content) || is_numeric($content) || is_bool($content)) {
+			} elseif ($content instanceof Element ||
+				is_string($content) ||
+				is_numeric($content) ||
+				is_bool($content)
+			) {
 				$this->addSingleContent($content);
 			} else {
-				throw new \InvalidArgumentException("Invalid object of type '".gettype($content)."' to add to '".$this->tag."' element: ");
+				throw new \InvalidArgumentException(
+					"Invalid object of type '".gettype($content)."' to add to '".$this->tag."' element: "
+				);
 			}
 		}
 		return $this;
@@ -135,7 +145,10 @@ class Element {
 	 * @param $tag  The lowercase tag name of the element
 	 */
 	public function isVoidElement($tag) {
-		return (in_array($tag, ["img", "input", "br", "wbr", "hr", "embed", "meta", "link", "col", "area", "base", "rect"]));
+		return (in_array(
+			$tag,
+			["img", "input", "br", "wbr", "hr", "embed", "meta", "link", "col", "area", "base", "rect"]
+		));
 	}
 
 
@@ -161,13 +174,13 @@ class Element {
 	protected function getHeader() {
 		$content = "<".$this->tag;
 		if (count($this->config)) {
-			foreach ($this->config as $key=>$value) {
+			foreach ($this->config as $key => $value) {
 				if ($value === false) {
 					continue;
-				} else if ($value === true) {
+				} elseif ($value === true) {
 					$content .= ' '.$key;
 					continue;
-				} else if ($key === "style") {
+				} elseif ($key === "style") {
 					$value = $this->minifyStyle($value);
 				}
 				$content .= ' '.$key.'="'.htmlspecialchars($value).'"';
@@ -245,9 +258,9 @@ class Element {
 
 		if ($query[0] === ".") {
 			$prefixSearch = "class";
-		} else if ($query[0] === "#") {
+		} elseif ($query[0] === "#") {
 			$prefixSearch = "id";
-		} else if ($query === "*") {
+		} elseif ($query === "*") {
 			$prefixSearch = "all";
 		} else {
 			$prefixSearch = "tag";
@@ -261,11 +274,11 @@ class Element {
 					if ($part->config["class"] === substr($query, 1)) {
 						array_push($results, $part);
 					}
-				} else if ($prefixSearch === "id" && array_key_exists("id", $part->config)) {
+				} elseif ($prefixSearch === "id" && array_key_exists("id", $part->config)) {
 					if ($part->config["id"] === substr($query, 1)) {
 						array_push($results, $part);
 					}
-				} else if ($prefixSearch === "tag" && property_exists($part, "tag")) {
+				} elseif ($prefixSearch === "tag" && property_exists($part, "tag")) {
 					if ($part->tag === $query) {
 						array_push($results, $part);
 					}
@@ -288,5 +301,4 @@ class Element {
 		}
 		return null;
 	}
-
 }

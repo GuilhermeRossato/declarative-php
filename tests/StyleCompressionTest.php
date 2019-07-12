@@ -12,8 +12,8 @@ class StyleCompressionTest extends TestCase {
 		$element = new Element("div", ["style" => $style]);
 		$elementStr = (string) $element;
 		$this->assertSame(
-			$elementStr,
 			'<div style="margin:0px;padding:0px"></div>',
+			$elementStr,
 			"Received unexpected string result from styled element"
 		);
 	}
@@ -24,8 +24,8 @@ class StyleCompressionTest extends TestCase {
 		$strBefore = (string) $element;
 
 		$this->assertSame(
-			$strBefore,
 			'<p class="header"></p>',
+			$strBefore,
 			"Received unexpected string result from element"
 		);
 
@@ -36,8 +36,8 @@ class StyleCompressionTest extends TestCase {
 		$strAfter = (string) $element;
 
 		$this->assertSame(
-			$strAfter,
 			'<p class="header" style="grid-template-columns:30% 60% 10%;grid-template-rows:50px 0 50px"></p>',
+			$strAfter,
 			"Received unexpected string result from styled element"
 		);
 	}

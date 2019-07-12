@@ -11,8 +11,8 @@ class SelfClosingTagRenderingTest extends TestCase {
 		$imgStr = $img->__toString();
 
 		$this->assertSame(
-			$imgStr,
 			'<img src="#" />',
+			$imgStr,
 			"Got unexpected string result from img element"
 		);
 	}
@@ -23,8 +23,8 @@ class SelfClosingTagRenderingTest extends TestCase {
 		$metaStr = $meta->__toString();
 
 		$this->assertSame(
-			$metaStr,
 			'<meta charset="utf-8" />',
+			$metaStr,
 			"Got unexpected string result from meta element"
 		);
 	}

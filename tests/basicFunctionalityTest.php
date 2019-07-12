@@ -15,8 +15,8 @@ class BasicFunctionalityTest extends TestCase {
 		);
 
 		$this->assertSame(
-			$div->render(),
 			"<div></div>",
+			$div->render(),
 			"Got unexpected render result from div string"
 		);
 	}
@@ -37,14 +37,14 @@ class BasicFunctionalityTest extends TestCase {
 		$expectedPageString = "<!doctype html><html><head></head><body></body></html>";
 
 		$this->assertSame(
-			$page->__toString(),
 			$expectedPageString,
+			$page->__toString(),
 			"Got unexpected string result from page string"
 		);
 
 		$this->assertSame(
-			$page->render(),
 			$expectedPageString,
+			$page->render(),
 			"Got unexpected string result from page string"
 		);
 	}

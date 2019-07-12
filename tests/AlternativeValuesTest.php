@@ -10,8 +10,8 @@ class FalsyValuesTest extends TestCase {
 		$element = new Element("span", ["class" => 0]);
 
 		$this->assertSame(
-			(string) $element,
-			'<span class="0"></span>'
+			'<span class="0"></span>',
+			(string) $element
 		);
 	}
 
@@ -19,8 +19,8 @@ class FalsyValuesTest extends TestCase {
 		$element = new Element("span", null, 0);
 
 		$this->assertSame(
-			$element->render(),
-			"<span>0</span>"
+			"<span>0</span>",
+			$element->render()
 		);
 	}
 
@@ -28,8 +28,8 @@ class FalsyValuesTest extends TestCase {
 		$element = new Element("span", null, null);
 
 		$this->assertSame(
-			$element->render(),
-			"<span></span>"
+			"<span></span>",
+			$element->render()
 		);
 	}
 
@@ -37,8 +37,8 @@ class FalsyValuesTest extends TestCase {
 		$element = new Element("span", null, false);
 
 		$this->assertSame(
-			$element->render(),
-			"<span>false</span>"
+			"<span>false</span>",
+			$element->render()
 		);
 	}
 
@@ -46,8 +46,8 @@ class FalsyValuesTest extends TestCase {
 		$element = new Element("span", null, true);
 
 		$this->assertSame(
-			$element->render(),
-			"<span>true</span>"
+			"<span>true</span>",
+			$element->render()
 		);
 	}
 
@@ -61,8 +61,8 @@ class FalsyValuesTest extends TestCase {
 	/**
 	 * @expectedException InvalidArgumentException
 	 */
-	public function testFalsyTagType() {
-		$element = new Element(null, true, 0);
+	public function testInvalidTruthyConfig() {
+		$element = new Element("p", true, 0);
 	}
 
 }

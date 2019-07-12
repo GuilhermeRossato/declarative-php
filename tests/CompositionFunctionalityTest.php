@@ -9,8 +9,8 @@ class CompositionFunctionalityTest extends TestCase {
 	public function testAddingStringContent() {
 		$element = new Element("div", null, "Hello");
 		$this->assertSame(
-			(string) $element,
 			"<div>Hello</div>",
+			(string) $element,
 			"Got unexpected string result from element"
 		);
 	}
@@ -21,8 +21,8 @@ class CompositionFunctionalityTest extends TestCase {
 		$element->add(new Element("span", [], "World"));
 
 		$this->assertSame(
-			(string) $element,
 			'<div>Hello<span>World</span></div>',
+			(string) $element,
 			"Got unexpected string result from element"
 		);
 	}
@@ -33,8 +33,8 @@ class CompositionFunctionalityTest extends TestCase {
 		$element->addAttribute("class", "foo");
 
 		$this->assertSame(
-			(string) $element,
 			'<div style="margin:0px" class="foo"></div>',
+			(string) $element,
 			"Got unexpected string result from element"
 		);
 	}
@@ -51,8 +51,8 @@ class CompositionFunctionalityTest extends TestCase {
 		);
 
 		$this->assertSame(
-			(string) $element,
 			"<div>abcd</div>",
+			(string) $element,
 			"Got unexpected string result from element"
 		);
 	}
@@ -74,9 +74,19 @@ class CompositionFunctionalityTest extends TestCase {
 		);
 
 		$this->assertSame(
-			(string) $element,
 			"<div><p>hi</p><span>there</span></div>",
+			(string) $element,
 			"Got unexpected string result from element"
+		);
+	}
+
+	public function testDeeplyNestedContentArrays() {
+		$element = new Element("div", [], [[[["H", [[["ello",[new Element("span", [], "World")]]]]]]]]);
+
+		$this->assertSame(
+			"<div>Hello<span>World</span></div>",
+			(string) $element,
+			"Received unexpected string result from element"
 		);
 	}
 

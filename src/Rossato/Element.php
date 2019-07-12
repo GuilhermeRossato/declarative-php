@@ -30,8 +30,8 @@ class Element {
 			throw new \InvalidArgumentException("Invalid config parameter: Second parameter must be an associative array or null");
 		}
 		$this->tag = strtolower(trim($tag));
+		$this->config = [];
 		if ($config !== null) {
-			$this->config = [];
 			foreach ($config as $key=>$value) {
 				$this->setAttribute($key, $value);
 			}
@@ -64,6 +64,7 @@ class Element {
 	 *
 	 * @param mixed @objects   An array or multiple parameters to be added to the element
 	 * @param mixed @any       Objects can be arrays, string or other Element instances
+	 *
 	 * @return Element         The element itself ($this)
 	 */
 	public function add() {
@@ -85,12 +86,14 @@ class Element {
 	}
 
 	/**
-	 * Sets a property of the object
+	 * Sets a property in the element's configuration
 	 *
 	 * @param string $attribute          The attribute to be set
-	 * @param mixed $value               The value to be set as string
+	 * @param mixed $value               The value to be set
+	 *
 	 * @return mixed                     The value written to the attribute
-	 * @throws InvalidArgumentException  When the $attribute parameter is not a string
+	 *
+	 * @throws InvalidArgumentException  When the attribute parameter is not a string
 	 */
 	public function setAttribute($attribute, $value = null) {
 		if (is_string($attribute)) {
@@ -102,28 +105,33 @@ class Element {
 	}
 
 	/**
-	 * Alias for setAttribute
+	 * Sets a property in the element's configuration (alias for setAttribute)
 	 *
-	 * @param string $attribute  The attribute to be set
-	 * @param string $value      The value to be set as string
-	 * @return string            The value written to the attribute
+	 * @param string $attribute          The attribute to be set
+	 * @param mixed $value               The value to be set
+	 *
+	 * @return mixed                     The value written to the attribute
+	 *
+	 * @throws InvalidArgumentException  When the attribute parameter is not a string
 	 */
 	public function addAttribute($attribute, $value = null) {
 		return $this->setAttribute($attribute, $value);
 	}
 
 	/**
-	 *  Sets the content of the element inconditionally, replacing previous content
-	 *  Warning: This is not to be used lightly as this could easily break the class
+	 * Retrievies a property in the element's configuration, without throwing any error if it does not exist
 	 *
-	 * @param mixed @content  The string or Element instance or array of contents to be set
+	 * @param  string $attribute  The attribute to be retrieved
+	 *
+	 * @return mixed              The value of the attribute as it is defined or null if it does not exists
 	 */
-	public function content($content) {
-		$this->content = $content;
+	public function getAttribute($attribute) {
+		return array_key_exists($attribute, $this->config) ? $this->config[$attribute] : null;
 	}
 
 	/**
 	 * Determines if a given tag is a void (self-closing) element.
+	 *
 	 * @param $tag  The lowercase tag name of the element
 	 */
 	public function isVoidElement($tag) {
@@ -211,6 +219,7 @@ class Element {
 
 	/**
 	 * Tries to find all sub-element that matches a query selection.
+	 *
 	 * @param  string $query   The query, like ".list" or "#root"
 	 * @return array           Returns the array of Element classes that matched or an empty array if nothing was found
 	*/
@@ -220,10 +229,8 @@ class Element {
 		// Handle multi-queries
 		if (strpos($query, ",") !== false) {
 			foreach (explode(",", $query) as $subQuery) {
-				foreach ($this->querySelectorAll($subQuery) as $subResults) {
-					foreach ($subResults as $singleSubResult) {
-						array_push($results, $singleSubResult);
-					}
+				foreach ($this->querySelectorAll($subQuery) as $subResult) {
+					array_push($results, $subResult);
 				}
 			}
 			return $results;

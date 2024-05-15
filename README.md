@@ -1,15 +1,17 @@
 <p align="center"><img src="https://github.com/GuilhermeRossato/declarative-php/blob/master/logo.png?raw=true" alt="Declarative PHP"/></p>
 <p align="center">:hammer: Simple micro-framework for building declarative web applications in PHP :newspaper:</p>
 
-You can think of this framework as a ReactDOM without JSX for PHP developers.
+Minimal experimental PHP framework inspired by ReactDOM to create web pages in a declarative way.
 
-This framework works by creating dynamic elements declaratively through php classes that render into HTML.
+Create dynamic elements through php classes that render into HTML.
 
 ## Getting started
 
-The element class constructor receives the tag name, the properties array and the contents as arguments:
+After installing this framework with `composer require rossato/declarative-php` you can build elements with the Element constructor: The class constructor receives 3 arguments: the element tag name, the properties array and the content of the element (its children):
 
 ```php
+require "vendor/autoload.php"
+
 use Rossato\Element;
 
 $div = new Element(
@@ -39,13 +41,13 @@ echo new Element(
 );
 ```
 
-You can also supply an array of elements or, if it does not contain children, just omit the parameter, or set it to null.
+You can also supply an array of elements as children:
 
 ```php
 use Rossato\Element;
 
 echo new Element(
-    "div",
+    "form",
     ["style" => "margin: 10px"],
     [
         new Element("input", ["type" => "text", "id" => "hello"]),
@@ -56,12 +58,12 @@ echo new Element(
 Generates the following:
 
 ```
-<div><input type="text" id="hello"/></div>
+<form style="width:10px"><input type="text" id="hello"/></form>
 ```
 
 ### Functional usage
 
-You are supposed to create components like these:
+You are supposed to create components like this:
 
 ```php
 use Rossato\Element;
@@ -124,7 +126,7 @@ You can probably read and understand this library in 15 minutes.
 
 ## Problems you can solve using this
 
-Transforming data in PHP to HTML is difficult because html is loosly validated:
+Transforming data in PHP to HTML is difficult because html is not strictly validated in general:
 
 ```php
 <?php
@@ -136,9 +138,9 @@ Transforming data in PHP to HTML is difficult because html is loosly validated:
 </div>
 ```
 
-You think your browser will let you know that you mispelled 'span' on the second closing tag? Nope, welcome to the web, browser just silently goes on.
+You think your browser will let you know that you mispelled 'span' on the second closing tag? Nope, the browser just silently goes on.
 
-You can take advantage of PHP interpreter to tell you if something is incorrect with syntax errors.
+You can take advantage of PHP interpreter to tell you if something is incorrect with syntax errors that fail fast.
 
 The idea is to declare in composition-based components all the visual logic, with the data that it needs to render fully.
 
